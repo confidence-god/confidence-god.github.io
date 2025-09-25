@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时情感分析系统 - 毕设项目</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            margin-bottom: 15px;
+            color: #5d5d5d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .metric {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .neutral { color: #6b7280; }
+        
+        .real-time-comment {
+            background: #f8fafc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .comment-meta {
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 实时情感分析系统</h1>
+            <p>基于社交媒体的情感分析毕设项目 | 实时监控情绪波动</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h3>📊 情感统计</h3>
+                <div class="metric positive" id="positive-count">0</div>
+                <p>正面情绪</p>
+                <div class="metric negative" id="negative-count">0</div>
+                <p>负面情绪</p>
+                <div class="metric neutral" id="neutral-count">0</div>
+                <p>中性情绪</p>
+            </div>
+            
+            <div class="card">
+                <h3>📈 实时情绪指数</h3>
+                <div class="metric" id="sentiment-index">50.0</div>
+                <p>当前情绪得分（0-100）</p>
+                <div style="margin-top: 15px;">
+                    <div id="sentiment-bar" style="height: 20px; background: #e5e7eb; border-radius: 10px; overflow: hidden;">
+                        <div id="sentiment-progress" style="height: 100%; background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981); width: 50%; transition: width 0.5s ease;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>⚡ 实时动态</h3>
+                <div id="activity">
+                    <p>系统就绪，等待数据流入...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>💬 最新评论情感分析</h3>
+            <div id="comment-stream">
+                <div class="real-time-comment">
+                    <div class="comment-meta">🔍 系统初始化中...</div>
+                    <div>正在连接情感分析引擎</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        情感分析系统 © 2024 - 基于机器学习的情感识别技术
+    </div>
+
+    <script>
+        // 模拟实时数据更新
+        function simulateRealTimeData() {
+            // 更新情感统计
+            document.getElementById('positive-count').textContent = 
+                Math.floor(Math.random() * 100 + 50);
+            document.getElementById('negative-count').textContent = 
+                Math.floor(Math.random() * 50 + 20);
+            document.getElementById('neutral-count').textContent = 
+                Math.floor(Math.random() * 30 + 10);
+            
+            // 更新情绪指数（0-100）
+            const sentimentIndex = Math.floor(Math.random() * 100);
+            document.getElementById('sentiment-index').textContent = sentimentIndex.toFixed(1);
+            document.getElementById('sentiment-progress').style.width = sentimentIndex + '%';
+            
+            // 更新情绪条颜色
+            let color;
+            if (sentimentIndex < 33) color = '#ef4444';
+            else if (sentimentIndex < 66) color = '#f59e0b';
+            else color = '#10b981';
+            document.getElementById('sentiment-progress').style.background = color;
+            
+            // 模拟新评论
+            const comments = [
+                "这个产品真的很棒，用户体验很好！",
+                "不太满意，希望后续能改进",
+                "中规中矩，没有什么特别的感觉",
+                "超级喜欢！已经推荐给朋友们了",
+                "有些地方还需要优化，但整体不错"
+            ];
+            const sentiments = ["positive", "negative", "neutral"];
+            
+            const newComment = comments[Math.floor(Math.random() * comments.length)];
+            const sentiment = sentiments[Math.floor(Math.random() * sentiments.length)];
+            
+            const commentStream = document.getElementById('comment-stream');
+            const newCommentHTML = `
+                <div class="real-time-comment">
+                    <div class="comment-meta">🕒 ${new Date().toLocaleTimeString()} | 情感: ${sentiment}</div>
+                    <div>${newComment}</div>
+                </div>
+            `;
+            
+            // 只保留最新的3条评论
+            const existingComments = commentStream.innerHTML;
+            const allComments = (newCommentHTML + existingComments).split('</div>').slice(0, 4).join('</div>');
+            commentStream.innerHTML = allComments;
+            
+            // 更新活动状态
+            document.getElementById('activity').innerHTML = 
+                `<p>🔄 最后更新: ${new Date().toLocaleTimeString()}</p>
+                 <p>📈 情绪趋势: ${sentimentIndex > 50 ? '积极' : '消极'}</p>
+                 <p>💾 数据量: ${Math.floor(Math.random() * 1000) + 500} 条评论</p>`;
+        }
+        
+        // 每3秒更新一次数据
+        setInterval(simulateRealTimeData, 3000);
+        simulateRealTimeData(); // 初始化数据
+    </script>
+</body>
+</html>
